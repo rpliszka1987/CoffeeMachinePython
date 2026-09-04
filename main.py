@@ -31,6 +31,9 @@ resources = {
     "coffee": 100,
 }
 
+machine_money = 0
+machine_running = True
+
 def check_resources(order):
     """Returns True when order can be made, False if ingredients are insufficient."""
     for item in order:
@@ -48,8 +51,17 @@ def process_coins():
     total += int(input("How many pennies? ")) * 0.01
     return total
 
-machine_money = 0.00
-machine_running = True
+def is_transaction_successful(money_received, drink_cost):
+    """Return True when payment is accepted, or False if money is insufficient."""
+    if money_received >= drink_cost:
+        money = round(money_received - drink_cost, 2)
+        print(f"Here is ${money} change.")
+        global machine_money
+        machine_money += drink_cost
+        return True
+    else:
+        print("Sorry that's not enough money.")
+        return False
 
 while machine_running:
     user_coffee = input("What would you want? (espresso/latte/cappuccino): ")
@@ -65,4 +77,5 @@ while machine_running:
         drink = MENU[user_coffee]
         if check_resources(drink["ingredients"]):
             payment = process_coins()
+            is_transaction_successful(payment, drink["cost"])
 
